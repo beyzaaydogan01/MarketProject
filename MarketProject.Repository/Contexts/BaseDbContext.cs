@@ -4,10 +4,12 @@ using System.Reflection.Emit;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using MarketProject.Models.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace MarketProject.Repository.Contexts;
 
-public sealed class BaseDbContext : DbContext
+public sealed class BaseDbContext : IdentityDbContext<User, IdentityRole, string>
 {
 
     public BaseDbContext(DbContextOptions<BaseDbContext> opt) : base(opt)
@@ -17,7 +19,7 @@ public sealed class BaseDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"server=(localdb)\MSSQLLocalDB; Database=MarketDb;Trusted_Connection=true");
+      
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
