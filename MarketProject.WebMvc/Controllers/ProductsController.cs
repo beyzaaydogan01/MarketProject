@@ -2,11 +2,13 @@
 using MarketProject.Service.Abstracts;
 using MarketProject.Service.Concretes;
 using MarketProject.WebMvc.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MarketProject.WebMvc.Controllers;
 
+[Authorize]
 public class ProductsController(IProductService productService) : Controller
 {
 

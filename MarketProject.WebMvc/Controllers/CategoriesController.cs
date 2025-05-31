@@ -3,9 +3,11 @@ using MarketProject.Models.Dtos.Categories;
 using Microsoft.AspNetCore.Mvc;
 using MarketProject.Service.Abstracts;
 using MarketProject.Service.Concretes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarketProject.WebMvc.Controllers;
 
+[Authorize]
 public sealed class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
