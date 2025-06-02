@@ -15,7 +15,7 @@ public sealed class UserService(UserManager<User> userManager, IMapper mapper) :
 
         if (!result.Succeeded)
         {
-            // todo: ilgili hata alınırsa exception fırlat 
+            //hata fırlat
         }
 
         UserResponseDto dto = mapper.Map<UserResponseDto>(user);
@@ -27,13 +27,13 @@ public sealed class UserService(UserManager<User> userManager, IMapper mapper) :
         var user = await userManager.FindByEmailAsync(login.Email);
         if (user is null)
         {
-            // todo: ilgili hata alınırsa exception fırlat 
+            
         }
 
         var passwordIsMatch = await userManager.CheckPasswordAsync(user, login.Password);
         if (passwordIsMatch is false)
         {
-            // todo: ilgili hata alınırsa exception fırlat 
+            
         }
 
         UserResponseDto dto = mapper.Map<UserResponseDto>(user);

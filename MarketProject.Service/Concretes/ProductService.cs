@@ -5,15 +5,22 @@ using MarketProject.Models.Entities;
 using MarketProject.Repository.Repositories.Abstracts;
 using MarketProject.Repository.Repositories.Concretes;
 using MarketProject.Service.Abstracts;
+using MarketProject.Service.Helpers.Cloudinary;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketProject.Service.Concretes;
 
-public sealed class ProductService(IMapper mapper, IProductRepository productRepository) : IProductService
+public sealed class ProductService(IMapper mapper, 
+    IProductRepository productRepository,
+    ISalesRepository salesRepository,
+    IFileService fileService) : IProductService
 {
 
     public async Task AddAsync(ProductAddRequestDto addRequestDto, CancellationToken cancellationToken = default)
     {
         Product product = mapper.Map<Product>(addRequestDto);
+        string url = await fileService.UploadImageAsync(addRequestDto.File, "products-image");
+        product.ImageUrl = url;
         await productRepository.AddAsync(product, cancellationToken);
     }
 
@@ -26,7 +33,7 @@ public sealed class ProductService(IMapper mapper, IProductRepository productRep
 
         if (product is null)
         {
-            //todo: Exception Fırlatılacak
+            throw new InvalidOperationException($"Ürün bulunamadı. Id: {productUpdateRequestDto.Id}");
         }
         Product updated = mapper.Map(productUpdateRequestDto, product!);
         await productRepository.UpdateAsync(updated, cancellationToken);
@@ -34,18 +41,17 @@ public sealed class ProductService(IMapper mapper, IProductRepository productRep
 
     public async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var product = await productRepository.GetAsync(x => x.Id == id
-            , include: false,
-            cancellationToken: cancellationToken
-        );
-
+        var product = await productRepository.GetByIdAsync(id, cancellationToken);
         if (product is null)
-        {
-            //todo: Exception Fırlatılacak
-        }
+            throw new InvalidOperationException("Silinmek istenen ürün bulunamadı.");
 
-        await productRepository.DeleteAsync(product!, cancellationToken);
+        bool hasSales = await salesRepository.HasSalesForProductAsync(id, cancellationToken);
+        if (hasSales)
+            throw new InvalidOperationException("Bu ürüne ait satış kaydı bulunduğundan silinemez.");
+
+        await productRepository.DeleteAsync(product, cancellationToken);
     }
+
 
     public async Task<List<ProductResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -57,26 +63,14 @@ public sealed class ProductService(IMapper mapper, IProductRepository productRep
 
     public async Task<List<ProductResponseDto>> GetAllByCategoryId(int categoryId, CancellationToken cancellationToken)
     {
-        var products = await productRepository.GetAllAsync(
-            x => x.CategoryId == categoryId,
-            enableTracking: false,
-            cancellationToken: cancellationToken
-            );
-
-        var responses = mapper.Map<List<ProductResponseDto>>(products);
-
-        return responses;
+        var products = await productRepository.GetProductsByCategoryIdAsync(categoryId, cancellationToken);
+        return mapper.Map<List<ProductResponseDto>>(products);
     }
 
     public async Task<List<ProductResponseDto>> GetAllByPriceRangeAsync(decimal min, decimal max, CancellationToken cancellationToken = default)
     {
-        var products = await productRepository
-            .GetAllAsync(filter: x => x.Price <= max && x.Price >= min,
-                enableTracking: false,
-                cancellationToken: cancellationToken);
-
-        var responses = mapper.Map<List<ProductResponseDto>>(products);
-        return responses;
+        var products = await productRepository.GetProductsByPriceRangeAsync(min, max, cancellationToken);
+        return mapper.Map<List<ProductResponseDto>>(products);
     }
 
     public async Task<Product> GetByIdForUpdateAsync(int id)

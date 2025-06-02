@@ -28,7 +28,6 @@ public sealed class CategoryService(IMapper mapper, ICategoryRepository category
         if (category == null)
         {
             throw new Exception($"Silinmek istenen kategori bulunamadı (id: {id})");
-            // veya: return; ya da: return NotFound();
         }
 
         await categoryRepository.DeleteAsync(category);
