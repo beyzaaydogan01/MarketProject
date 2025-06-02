@@ -1,0 +1,29 @@
+﻿.register-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    .register-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #343a40;
+    }
+
+    .register-container .form-control {
+        border-radius: 6px;
+    }
+
+    .register-container .btn-primary {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .register-container .login-link {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
