@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+
 namespace MarketProject.Models.Dtos.Products;
 
 public sealed class ProductUpdateRequestDto
@@ -9,4 +11,6 @@ public sealed class ProductUpdateRequestDto
     public int Stock { get; set; }
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
+    public int CategoryId { get; set; }
+    public IFormFile? File { get; set; }
 }
