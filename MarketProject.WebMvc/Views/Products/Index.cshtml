@@ -1,34 +1,58 @@
-﻿@model List<ProductResponseDto>
+﻿@model List<ProductListViewModel>
 
-<a asp-action="Add" asp-controller="Products" class="btn btn-outline-success">Ekle</a>
+@{
+    ViewData["Title"] = "Ürünler";
+}
 
-<h2 class="text-center">Ürünler</h2>
-<div class="row">
-    @foreach (var item in Model)
+<div class="container my-4">
+
+    @if (TempData["Error"] is not null)
     {
-        <div class="col-md-4 p-2">
-            <div class="card">
-                <img style="width: 200px; height: 200px;" src="@item.ImageUrl" alt="" class="card-img-top">
-                <div class="card-body p-2">
-                    <h5 class="card-title">
-                        @item.Name
-                    </h5>
-                    <p class="card-text"><strong>Kategori</strong>: @item.CategoryName</p>
-                    <p class="card-text">@item.Description</p>
-                    <p class="card-text"><strong>Fiyat</strong>:@item.Price TL</p>
-                    <p class="card-text"><strong>Stok Adedi</strong>:@item.Stock TL</p>
-
-                    <div class="mt-3 d-flex justify-content-between">
-                        <td><a asp-controller="Products" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning">Güncelle</a></td>
-
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
-                            <button type="submit" class="btn btn-sm btn-danger">Sil</button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
+        <div class="alert alert-danger">
+            @TempData["Error"]
         </div>
     }
+    @if (TempData["Success"] is not null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Ürün Listesi</h2>
+        <a asp-action="Add" asp-controller="Products" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Yeni Ürün Ekle
+        </a>
+    </div>
 
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <p class="mb-1"><strong>Kategori:</strong> @item.CategoryName</p>
+                        <p class="mb-1"><strong>Fiyat:</strong> @item.Price ₺</p>
+                        <p class="mb-1"><strong>Stok:</strong> @item.Stock</p>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                        <a asp-controller="Products" asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Güncelle
+                        </a>
+
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i> Sil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

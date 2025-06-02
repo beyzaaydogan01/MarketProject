@@ -1,11 +1,31 @@
-﻿@model CategoryAddRequestDto
+﻿@model CategoryAddViewModel
 
-<form asp-action="Add" asp-controller="Categories" method="post" style="width:50%" >
-   
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label">Kategori Adı</label>
-        <input asp-for="Name"  type="text" class="form-control" >
+@{
+    ViewData["Title"] = "Kategori Ekle";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4 text-success">Yeni Kategori Ekle</h3>
+
+                    <form asp-action="Add" asp-controller="Categories" method="post">
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Name" type="text" class="form-control" placeholder="Kategori Adı">
+                            <label asp-for="Name">Kategori Adı</label>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success px-4">Kaydet</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-outline-success">Kaydet</button>
-</form>
+</div>
