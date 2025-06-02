@@ -11,7 +11,7 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.ToTable("Products").HasKey(x => x.Id);
         builder.Property(x => x.CreatedDate).HasColumnName("Created").IsRequired();
         builder.Property(x => x.UpdatedDate).HasColumnName("Updated");
-        builder.Property(x => x.Name).HasColumnName("Product_name");
+        builder.Property(x => x.Name).HasColumnName("Product_Name");
         builder.Navigation(x => x.Category).AutoInclude();
     }
 }
