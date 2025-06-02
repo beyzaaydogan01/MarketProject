@@ -1,10 +1,10 @@
 using MarketProject.Models.Entities;
+using MarketProject.Repository;
 using MarketProject.Repository.Contexts;
-using MarketProject.Repository.Repositories.Abstracts;
-using MarketProject.Repository.Repositories.Concretes;
-using MarketProject.Service.Abstracts;
-using MarketProject.Service.Concretes;
+using MarketProject.Service;
+using MarketProject.Service.Helpers.Cloudinary;
 using MarketProject.Service.Profiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,15 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<BaseDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddRepositoryDependencies(builder.Configuration);
+builder.Services.AddServiceDependencies();
 
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddAutoMapper(typeof(ProductProfile));
-builder.Services.AddAutoMapper(typeof(CategoryProfile));
+
+
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -37,8 +35,10 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Auth/Login";  // Login sayfasý yolu
+    options.LoginPath = "/Auth/Login";
 });
+
+
 
 var app = builder.Build();
 
