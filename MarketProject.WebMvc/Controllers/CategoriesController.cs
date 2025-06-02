@@ -1,21 +1,15 @@
-﻿using MarketProject.WebMvc.Models.ViewModels;
-using MarketProject.Models.Dtos.Categories;
+﻿using MarketProject.Models.Dtos.Categories;
 using Microsoft.AspNetCore.Mvc;
 using MarketProject.Service.Abstracts;
 using MarketProject.Service.Concretes;
 using Microsoft.AspNetCore.Authorization;
+using MarketProject.WebMvc.Models.ViewModels.Categories;
 
 namespace MarketProject.WebMvc.Controllers;
 
 [Authorize]
-public sealed class CategoriesController : Controller
+public sealed class CategoriesController(ICategoryService categoryService) : Controller
 {
-    private readonly ICategoryService _categoryService;
-
-    public CategoriesController(ICategoryService categoryService)
-    {
-        _categoryService = categoryService;
-    }
 
     [HttpGet]
     public IActionResult Add()
@@ -26,7 +20,7 @@ public sealed class CategoriesController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(CategoryAddRequestDto categoryAddRequestDto)
     {
-        await _categoryService.AddAsync(categoryAddRequestDto);
+        await categoryService.AddAsync(categoryAddRequestDto);
         return RedirectToAction("Index", "Categories");
     }
 
@@ -39,18 +33,18 @@ public sealed class CategoriesController : Controller
             Name = viewModel.Name
         };
 
-        await _categoryService.UpdateAsync(dto);
+        await categoryService.UpdateAsync(dto);
         return RedirectToAction("Index", "Categories");
     }
 
     [HttpGet]
     public async Task<IActionResult> Update(int id)
     {
-        var category = await _categoryService.GetByIdForUpdateAsync(id);
+        var category = await categoryService.GetByIdForUpdateAsync(id);
 
         if (category == null)
         {
-            return NotFound(); 
+            return NotFound();
         }
 
         CategoryUpdateViewModel viewModel = new()
@@ -63,17 +57,24 @@ public sealed class CategoriesController : Controller
     }
 
 
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        await _categoryService.DeleteAsync(id);
+        await categoryService.DeleteAsync(id);
         return RedirectToAction("Index", "Categories");
     }
 
     public async Task<IActionResult> Index()
     {
-        var categories = await _categoryService.GetAllAsync();
-        return View(categories);
+        var categories = await categoryService.GetAllAsync();
+
+        var viewModels = categories.Select(dto => new CategoryListViewModel
+        {
+            Id = dto.Id,
+            Name = dto.Name
+        }).ToList();
+
+        return View(viewModels);
     }
 
 }

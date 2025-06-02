@@ -1,5 +1,5 @@
 ﻿using MarketProject.Models.Entities;
-using MarketProject.WebMvc.Models.ViewModels;
+using MarketProject.WebMvc.Models.ViewModels.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,16 @@ public class AuthController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var user = new User { UserName = model.FirstName, Email = model.Email };
+        Console.WriteLine($"Register - UserName: '{model.UserName}'");
+
+        var user = new User
+        {
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email,
+            UserName = model.UserName
+        };
+
         var result = await userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
@@ -46,7 +55,7 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        return View(new LoginViewModel()); 
+        return View(new LoginViewModel());
     }
 
     [HttpPost]
@@ -56,7 +65,7 @@ public class AuthController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var result = await signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
+        var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
 
         if (result.Succeeded)
             return RedirectToAction("Index", "Home");
@@ -64,6 +73,8 @@ public class AuthController : Controller
         ModelState.AddModelError("", "Kullanıcı adı veya şifre yanlış");
         return View(model);
     }
+
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
         await signInManager.SignOutAsync();
