@@ -1,5 +1,4 @@
-﻿
-using Core.Repositories;
+﻿using Core.Repositories;
 using MarketProject.Models.Entities;
 
 namespace MarketProject.Repository.Repositories.Abstracts;
