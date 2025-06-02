@@ -9,7 +9,9 @@ public class SalesAddViewModel
     public int? ProductId { get; set; }
     [Required]
     public int? CategoryId { get; set; }
+    [Required]
     public int Quantity { get; set; }
+    [Required]
     public decimal UnitPrice { get; set; }
     public List<SelectListItem> Products { get; set; } = new();
     public List<SelectListItem> Categories { get; set; } = new();
