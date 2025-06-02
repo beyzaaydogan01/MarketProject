@@ -125,7 +125,7 @@ public abstract class EfRepositoryBase<TEntity, TId, TContext> : IRepository<TEn
         return await query.FirstOrDefaultAsync(filter, cancellationToken);
     }
 
-    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null, bool include = true, bool enableTracking = true, CancellationToken cancellationToken = default)
+    public virtual async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null, bool include = true, bool enableTracking = true, CancellationToken cancellationToken = default)
     {
         IQueryable<TEntity> query = Context.Set<TEntity>();
         if (filter is not null)
