@@ -15,7 +15,7 @@ public sealed class UserService(UserManager<User> userManager, IMapper mapper) :
 
         if (!result.Succeeded)
         {
-            //hata fırlat
+            
         }
 
         UserResponseDto dto = mapper.Map<UserResponseDto>(user);
