@@ -15,7 +15,7 @@ public sealed class UserService(UserManager<User> userManager, IMapper mapper) :
 
         if (!result.Succeeded)
         {
-            
+            throw new Exception($"Kullanıcı oluşturulamadı");
         }
 
         UserResponseDto dto = mapper.Map<UserResponseDto>(user);
@@ -27,13 +27,13 @@ public sealed class UserService(UserManager<User> userManager, IMapper mapper) :
         var user = await userManager.FindByEmailAsync(login.Email);
         if (user is null)
         {
-            
+            throw new Exception("Kullanıcı bulunamadı.");
         }
 
         var passwordIsMatch = await userManager.CheckPasswordAsync(user, login.Password);
         if (passwordIsMatch is false)
         {
-            
+            throw new Exception("Şifre hatalı.");
         }
 
         UserResponseDto dto = mapper.Map<UserResponseDto>(user);
