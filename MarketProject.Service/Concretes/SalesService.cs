@@ -8,8 +8,7 @@ using MarketProject.Service.Abstracts;
 namespace MarketProject.Service.Concretes;
 
 public class SalesService (ISalesRepository salesRepository, IMapper mapper,
-        IProductRepository productRepository,
-        ICategoryRepository categoryRepository) : ISalesService
+        IProductRepository productRepository) : ISalesService
 {
 
     public async Task AddAsync(SalesAddRequestDto addRequestDto, CancellationToken cancellationToken = default)
